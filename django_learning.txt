@@ -1,0 +1,35 @@
+python manage.py makemigrations
+создаем файлик с классом модели в папке миграций
+при обновлении чего-либо в базах запускать сначала его, потом migrate
+
+-- python manage.py sqlmigrate women 0001
+создаем sql файл на основе файла миграции из папки по названию и номеру файла
+
+python manage.py migrate
+осуществляет все миграции джанго проекта и создает таблички в базе, указанной в конфиге
+
+
+python manage.py shell 
+
+from women.models import Women
+from django.db import connection
+connection.queries
+
+Women.objects.all() - litim 21
+Women.objects.create() - without save()
+Women.objects.filter()
+Women.objects.exclude()
+Women.objects.order_by()
+Women.objects.get()
+Women.objects.filter().order_by()
+Women.objects.filter('-pk')
+
+wo = Women.objects.get(pk=1)
+wo.title = 'new'
+wo.save()
+
+wd = Women.objects.filter(pk__gte=1)
+wd.delete()
+
+Women(title='shir', content='sszz')
+w = _
