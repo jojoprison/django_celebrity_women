@@ -12,13 +12,13 @@ class AddPostForm(forms.ModelForm):
         self.fields['cat'].empty_label = 'Категория не выбрана'
 
     class Meta:
-        # делает связь с моедлью
+        # делает связь с моделью
         model = Women
         # какие поля отобразить в форме
         # __all__ - все поля, кроме заполняющихся автоматически
         # но рекомендуется явно указывать список полей
         fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
-        # определяем стиль для виджетом формы
+        # определяем стиль для виджетов (поля, дариобаттоны, текстареи и тд.) формы
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
