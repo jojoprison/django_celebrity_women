@@ -11,6 +11,7 @@
 15 Классы представлений CBV (listview, detailview, createview)
 16 Основы ORM
 17 Mixins, миксины
+18 Пагинация страниц
 
 
 python manage.py makemigrations
@@ -34,6 +35,7 @@ from django.db.models import * - для импорта всех аггрегир
 from django.db.models import F - класс для фильтрации по полям полученных записей
 from django.db.models.functions import Length - тестим БД функции
 from django.db import reset_queries - очищает список последних выполненных запросов
+from django.core.paginator import Paginator
 
 connection.queries - вызов словаря с запросами
 reset_queries()
@@ -136,3 +138,18 @@ slug = 'shakira'
 w = Women.objects.raw("SELECT id, title FROM women_women WHERE slug='" + slug + "'") - это прямой путь к SQL-инъекциям
 
 w = Women.objects.raw("SELECT id, title FROM women_women WHERE slug='%s'", [slug]) - это безопасный путь, можно передавать несколько переменных
+
+women = ['Анджелина Джоли', 'Дженнифер Лоуренс', 'Джулия Робертс', 'Марго Робби', 'Ума Турман', 'Ариана Гранде', 'Бейонсе', 'Кэтти Перри', 'Рианна', 'Шакира']
+
+p = Paginator(women, 3) - второй параметр - сколько элементов отображать на странице
+p.count
+p.num_pages
+p.page_range - последовательность чисел от 1 до num_pages
+
+p1 = p.page(1)
+p1.object_list
+p1.has_next()
+p1.has_previous()
+p1.has_other_pages() - есть ли другие страницы
+p1.next_page_number()
+p1.previous_page_number()

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -22,6 +23,9 @@ class WomenHome(DataMixin, ListView):
     context_object_name = 'posts'
     # передает только статические незименяемые значения (если без get_context_data)
     # extra_context = {'title': 'Главная страница'}
+    # пагинация уже есть в ListView, нужно лишь задать кол-во элементов на странице
+    # ListView АВТОМАТИЧЕСКИ передает в темплейт объекты paginator и page_obj
+    # paginate_by = 3
 
     # формирует и статический и динамический контекст, передаваемый в шаблон
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -57,7 +61,19 @@ class WomenHome(DataMixin, ListView):
 #     return render(request, 'women/index.html', context=context)
 
 def about(request):
-    return render(request, 'women/about.html', {'menu': menu, 'title': 'Главная страница'})
+    # пример пагинации внутри функций представления:
+    contact_list = Women.objects.all()
+
+    # будет отображаться 3 элемента списка на каждой странице
+    paginator = Paginator(contact_list, 3)
+
+    # получаем номер текущей страницы из запроса по параметру page из GET запроса
+    page_number = request.GET.get('page')
+    # получаем список элементов текущей страницы по ее номеру
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'women/about.html', {'menu': menu, 'title': 'О сайте',
+                                                'page_obj': page_obj})
 
 
 # вместо нее класс представления для отображения формы (createview)
