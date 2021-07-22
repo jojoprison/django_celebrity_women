@@ -12,6 +12,7 @@
 16 Основы ORM
 17 Mixins, миксины
 18 Пагинация страниц
+19 Регистрация пользователей на сайте
 
 
 python manage.py makemigrations
