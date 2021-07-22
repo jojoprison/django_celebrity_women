@@ -1,20 +1,20 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import *
 from .models import *
-
-menu = [{'title': 'О сайте', 'url_name': 'about'},
-        {'title': 'Добавить статью', 'url_name': 'add_page'},
-        {'title': 'Обратная связь', 'url_name': 'contact'},
-        {'title': 'Войти', 'url_name': 'login'},
-]
+from .utils import *
 
 
 # кастомный CBV (classes-based view)
-class WomenHome(ListView):
+# первый наследуемый класс первым и обрабатывается, то есть повторяющиеся
+# аттрибуты берутся из первого родительского класса,
+# поэтому миксины лучшез записывать в первую очередь
+class WomenHome(DataMixin, ListView):
     model = Women
     # по дефолту будет women/women_list.html
     template_name = 'women/index.html'
@@ -25,14 +25,14 @@ class WomenHome(ListView):
 
     # формирует и статический и динамический контекст, передаваемый в шаблон
     def get_context_data(self, *, object_list=None, **kwargs):
-        # получаем весь контекст, который уже сформирован
+        # получаем контекст, сформированный на основе базового класса ListView
         context = super().get_context_data(**kwargs)
-        # добавляем новый параметр в контекст
-        context['menu'] = menu
-        context['title'] = 'Главная страница'
-        context['cat_selected'] = 0
 
-        return context
+        # заносим в контекст новое значение с тайтлом, остальное берем из миксины
+        c_def = self.get_user_context(title='Главная страница')
+
+        # объединяем 2 словаря в общий контекст
+        return dict(list(context.items()) + list(c_def.items()))
 
     # что именно выбирать из модели и передавать на вьюху
     def get_queryset(self):
@@ -51,7 +51,6 @@ class WomenHome(ListView):
 #     }
 #
 #     return render(request, 'women/index.html', context=context)
-
 
 def about(request):
     return render(request, 'women/about.html', {'menu': menu, 'title': 'Главная страница'})
@@ -89,7 +88,9 @@ def about(request):
 #     return render(request, 'women/addpage.html', {'form': form , 'menu': menu,
 #                                                   'title': 'Добавление статьи'})
 
-class AddPage(CreateView):
+# описание структуры наследования выше
+# LoginRequiredMixin - миксина выдает 404 для неавторизованных пользователей
+class AddPage(LoginRequiredMixin, DataMixin, CreateView):
     # аттрибут указывает на класс формы, который будет подключаться к классу вида
     form_class = AddPostForm
     # подключаем шаблон для формы
@@ -98,16 +99,21 @@ class AddPage(CreateView):
     # reverse - пытается сразу построить маршрут в момент создания объекта
     # reverse_lazy - выполняет построение маршрута только в момент, когда он понадобится
     success_url = reverse_lazy('home')
+    # указывает адрес редиректа для неавторизированных пользователей
+    login_url = reverse_lazy('home')
+    # будет генериться 403 (доступ запрещен) в случае неавторизированного юзера
+    raise_exception = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Добавление статьи'
-        context['menu'] = menu
+        c_def = self.get_user_context(title='Добавление статьи')
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
 
 
+# чтобы ограничить доступ для неавторизированных юзеров
+@login_required
 def contact(request):
     return HttpResponse('Обратная связь')
 
@@ -130,7 +136,8 @@ def login(request):
 #     return render(request, 'women/post.html', context=context)
 
 
-class ShowPost(DetailView):
+# описание структуры наследования выше
+class ShowPost(DataMixin, DetailView):
     model = Women
     template_name = 'women/post.html'
     # изменяем названием переменной слага в маршрутизаторе
@@ -143,10 +150,9 @@ class ShowPost(DetailView):
 
         # будет нормально работать только в случае переопределения __str__ в классе
         # в остальных случаях лучше юзать context['post'].title
-        context['title'] = context['post']
-        context['menu'] = menu
+        c_def = self.get_user_context(title=context['post'])
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 # класс-представление вместо нее
@@ -171,7 +177,7 @@ class ShowPost(DetailView):
 #     return render(request, 'women/index.html', context=context)
 
 
-class WomenCategory(ListView):
+class WomenCategory(DataMixin, ListView):
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
@@ -187,12 +193,12 @@ class WomenCategory(ListView):
         context = super().get_context_data(**kwargs)
 
         # обращаемся к параметру категории первой записи коллекции
-        context['title'] = 'Категория - ' + str(context['posts'][0].cat)
-        context['menu'] = menu
-        # то же самое, что выше
-        context['cat_selected'] = context['posts'][0].cat_id
+        c_def = self.get_user_context(
+            title='Категория - ' + str(context['posts'][0].cat),
+            cat_selected=context['posts'][0].cat_id
+        )
 
-        return context
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def pageNotFound(request, exception):
