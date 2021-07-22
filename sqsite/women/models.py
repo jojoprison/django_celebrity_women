@@ -28,7 +28,7 @@ class Women(models.Model):
     class Meta:
         verbose_name = 'Известные женщины'
         verbose_name_plural = 'Известные щенщины'
-        ordering = ['-time_create', 'title']
+        # ordering = ['-time_create', 'title']
 
 
 class Category(models.Model):
