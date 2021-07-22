@@ -32,7 +32,11 @@ class WomenHome(DataMixin, ListView):
         c_def = self.get_user_context(title='Главная страница')
 
         # объединяем 2 словаря в общий контекст
-        return dict(list(context.items()) + list(c_def.items()))
+        # return dict(list(context.items()) + list(c_def.items()))
+        # до 3.9:
+        # return {**context, **c_def}
+        # после 3.9:
+        return context | c_def
 
     # что именно выбирать из модели и передавать на вьюху
     def get_queryset(self):
@@ -109,7 +113,7 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
 
         c_def = self.get_user_context(title='Добавление статьи')
 
-        return dict(list(context.items()) + list(c_def.items()))
+        return context | c_def
 
 
 # чтобы ограничить доступ для неавторизированных юзеров
@@ -152,7 +156,7 @@ class ShowPost(DataMixin, DetailView):
         # в остальных случаях лучше юзать context['post'].title
         c_def = self.get_user_context(title=context['post'])
 
-        return dict(list(context.items()) + list(c_def.items()))
+        return context | c_def
 
 
 # класс-представление вместо нее
@@ -198,7 +202,7 @@ class WomenCategory(DataMixin, ListView):
             cat_selected=context['posts'][0].cat_id
         )
 
-        return dict(list(context.items()) + list(c_def.items()))
+        return context | c_def
 
 
 def pageNotFound(request, exception):
