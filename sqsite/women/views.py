@@ -1,5 +1,7 @@
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -139,8 +141,9 @@ def contact(request):
     return HttpResponse('Обратная связь')
 
 
-def login(request):
-    return HttpResponse('Авторизация')
+# теперь юзаем класс с вьюхой
+# def login(request):
+#     return HttpResponse('Авторизация')
 
 
 # вместо нее класс представления для отображения конкретной страницы (detailview)
@@ -257,3 +260,37 @@ class RegisterUser(DataMixin, CreateView):
         c_def = self.get_user_context(title='Регистрация')
 
         return context | c_def
+
+    # вызывается при успешной проверке формы регистрации
+    def form_valid(self, form):
+        # самостоятельно сохраняем форму в БД,
+        user = form.save()
+        # стандартная джанговская ф-ия, авторизирующая юзера
+        login(self.request, user)
+
+        return redirect('home')
+
+
+# будем юзать логику базовой вьюхи логина
+class LoginUser(DataMixin, LoginView):
+    # стандартная форма авторизации от джанги
+    form_class = LoginUserForm
+    template_name = 'women/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Авторизация')
+
+        return context|c_def
+
+    # вызывается в случае если юзер верно ввел логин и пароль
+    # можно юзать LOGIN_REDIRECT_URL в setting.py
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    # стандартная джанговская функция логаута юзера
+    logout(request)
+
+    return redirect('login')
