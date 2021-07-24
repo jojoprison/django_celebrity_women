@@ -47,7 +47,8 @@ class WomenHome(DataMixin, ListView):
 
     # что именно выбирать из модели и передавать на вьюху
     def get_queryset(self):
-        return Women.objects.filter(is_published=True)
+        # select_related - загружает и данные из таблицы категории (ЖАДНАЯ ЗАГРУЗКА)
+        return Women.objects.filter(is_published=True).select_related('cat')
 
 
 # способ отображения представления через функцию
@@ -209,17 +210,21 @@ class WomenCategory(DataMixin, ListView):
     allow_empty = False
 
     def get_queryset(self):
+        # опять юзаем жадную загрузку во избижании дубликатов sql запросов
         return Women.objects.filter(cat__slug=self.kwargs['cat_slug'],
-                                    is_published=True)
+                                    is_published=True).select_related('cat')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         # формируем контекст данный на осонве родительского (внутри коллекция записей)
         context = super().get_context_data(**kwargs)
 
+        # по слагу берем категорию, дабы исключить лишние запросы
+        c = Category.objects.get(slug=self.kwargs['cat_slug'])
+
         # обращаемся к параметру категории первой записи коллекции
         c_def = self.get_user_context(
-            title='Категория - ' + str(context['posts'][0].cat),
-            cat_selected=context['posts'][0].cat_id
+            title='Категория - ' + str(c.name),
+            cat_selected=c.pk
         )
 
         return context | c_def

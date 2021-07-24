@@ -14,6 +14,7 @@
 18 Пагинация страниц
 19 Регистрация пользователей на сайте
 20 Авторизация юзеров
+21 Оптимизация сайта w/ Django Debug Toolbar
 
 
 python manage.py makemigrations

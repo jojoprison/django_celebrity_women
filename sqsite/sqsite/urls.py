@@ -28,6 +28,14 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    # вне дебага не будет работать
+    import debug_toolbar
+
+    # для django_debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
+
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # есть handler500, handler400  и тд
