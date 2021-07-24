@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    # капча использует базу данных в своей таблице и надо выполнить миграцию
+    'captcha',
     'women.apps.WomenConfig'
 ]
 
@@ -138,3 +140,10 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+CAsHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'sqsite_cache'),
+    }
+}

@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.core.cache import cache
 
 from women.models import *
 
@@ -23,7 +24,18 @@ class DataMixin:
 
         # избравляемся от тегов templatetags/show_categories и меняем шаблон base.html
         # считаем, сколько для каждой рубрики есть записей
-        cats = Category.objects.annotate(Count('women'))
+        # cats = Category.objects.annotate(Count('women'))
+        # читаем коллекцию категорий из кэша
+        # кэширование может скрыть какие-либо sql запросы и тем самым
+        # вводить в заблуждение
+        # СЛЕДУЕТ ВКЛЮЧАТЬ ТОЛЬКО НА КОНЕЧНО ЭТАПЕ РАЗРАБОТКИ
+        cats = cache.get('cats')
+
+        if not cats:
+            # если в кэше еще нет коллекций, берем из БД
+            cats = Category.objects.annotate(Count('women'))
+            cache.set('cats', cats, 60)
+
         # передаем список категорий, чтобы потом использовать на вьюхе через переменную
         context['cats'] = cats
 

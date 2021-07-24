@@ -797,8 +797,8 @@ S2.define('select2/utils',[
   };
 
   Utils.StoreData = function (element, name, value) {
-    // Stores an item in the cache for a specified element.
-    // name is the cache key.
+    // Stores an item in the sqsite_cache for a specified element.
+    // name is the sqsite_cache key.
     var id = Utils.GetUniqueElementId(element);
     if (!Utils.__cache[id]) {
       Utils.__cache[id] = {};
@@ -808,9 +808,9 @@ S2.define('select2/utils',[
   };
 
   Utils.GetData = function (element, name) {
-    // Retrieves a value from the cache by its key (name)
+    // Retrieves a value from the sqsite_cache by its key (name)
     // name is optional. If no name specified, return
-    // all cache items for the specified element.
+    // all sqsite_cache items for the specified element.
     // and for a specified element.
     var id = Utils.GetUniqueElementId(element);
     if (name) {
@@ -5325,7 +5325,7 @@ S2.define('select2/options',[
       dataset = $.extend(true, {}, $e[0].dataset, dataset);
     }
 
-    // Prefer our internal data cache if it exists
+    // Prefer our internal data sqsite_cache if it exists
     var data = $.extend(true, {}, Utils.GetData($e[0]), dataset);
 
     data = Utils._convertData(data);

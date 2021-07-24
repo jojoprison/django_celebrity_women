@@ -623,7 +623,7 @@ module.exports = function(XRegExp) {
             }
         }
 
-        // Reset the pattern cache used by the `XRegExp` constructor, since the same pattern and
+        // Reset the pattern sqsite_cache used by the `XRegExp` constructor, since the same pattern and
         // flags might now produce different results
         XRegExp.cache.flush('patterns');
     };
@@ -2762,7 +2762,7 @@ var nativ = {
 };
 // Storage for fixed/extended native methods
 var fixed = {};
-// Storage for regexes cached by `XRegExp.cache`
+// Storage for regexes cached by `XRegExp.sqsite_cache`
 var regexCache = {};
 // Storage for pattern details cached by the `XRegExp` constructor
 var patternCache = {};
@@ -3487,7 +3487,7 @@ XRegExp.addToken = function(regex, handler, options) {
         leadChar: options.leadChar
     });
 
-    // Reset the pattern cache used by the `XRegExp` constructor, since the same pattern and flags
+    // Reset the pattern sqsite_cache used by the `XRegExp` constructor, since the same pattern and flags
     // might now produce different results
     XRegExp.cache.flush('patterns');
 };
@@ -3502,7 +3502,7 @@ XRegExp.addToken = function(regex, handler, options) {
  * @returns {RegExp} Cached XRegExp object.
  * @example
  *
- * while (match = XRegExp.cache('.', 'gs').exec(str)) {
+ * while (match = XRegExp.sqsite_cache('.', 'gs').exec(str)) {
  *   // The regex is compiled once only
  * }
  */
@@ -3518,10 +3518,10 @@ XRegExp.cache = function(pattern, flags) {
 // Intentionally undocumented; used in tests
 XRegExp.cache.flush = function(cacheName) {
     if (cacheName === 'patterns') {
-        // Flush the pattern cache used by the `XRegExp` constructor
+        // Flush the pattern sqsite_cache used by the `XRegExp` constructor
         patternCache = {};
     } else {
-        // Flush the regex cache populated by `XRegExp.cache`
+        // Flush the regex sqsite_cache populated by `XRegExp.sqsite_cache`
         regexCache = {};
     }
 };

@@ -11,7 +11,7 @@
             }
         },
         redisplay: function(id) {
-            // Repopulate HTML select box from cache
+            // Repopulate HTML select box from sqsite_cache
             const box = document.getElementById(id);
             const scroll_value_from_top = box.scrollTop;
             box.innerHTML = '';
@@ -56,7 +56,7 @@
             SelectBox.cache[id].push({value: option.value, text: option.text, displayed: 1});
         },
         cache_contains: function(id, value) {
-            // Check if an item is contained in the cache
+            // Check if an item is contained in the sqsite_cache
             for (const node of SelectBox.cache[id]) {
                 if (node.value === value) {
                     return true;

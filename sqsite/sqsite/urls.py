@@ -23,6 +23,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # маппинг для модуля с капчей из доков
+    path('captcha/', include('captcha.urls')),
     # данный префикс всегда будет добавляться к линкам
     path('', include('women.urls')),
 ]
