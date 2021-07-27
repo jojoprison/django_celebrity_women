@@ -1,0 +1,5 @@
+PassengerEnabled On
+# в итоге сработала такая хня, тк окружение локально создано нами в djangoevn ЛОЛ
+PassengerPython /home/j/jojoskate/jojoskate.beget.tech/djangoev/bin/python3.9
+# такая хня в итоге не сработала
+# PassengerPython /home/j/jojoskate/.local/bin/python3.9
