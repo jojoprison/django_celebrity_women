@@ -141,7 +141,7 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-CAsHES = {
+CASHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': os.path.join(BASE_DIR, 'sqsite_cache'),
