@@ -36,7 +36,6 @@ class AddPostForm(forms.ModelForm):
 
         return title
 
-
     # поля для формы без использования модели
     # title = forms.CharField(max_length=255, label='Заголовок',
     #                         widget=forms.TextInput(attrs={'class': 'form-input'}))
