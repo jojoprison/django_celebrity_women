@@ -22,7 +22,7 @@ from women.views import *
 from django.urls import path, include
 
 from django.views.static import serve as mediaserve
-from django.conf.urls import url
+# from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,13 +43,14 @@ if settings.DEBUG:
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 else:
+    pass
     # костыль, чтобы на хосте статик файлы корректно брались из папок
-    urlpatterns += [
-        url(f'^{settings.MEDIA_URL.lstrip("/")}(?P<path>.*)$',
-            mediaserve, {'document_root': settings.MEDIA_ROOT}),
-        url(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*$',
-            mediaserve, {'document_root': settings.STATIC_ROOT}),
-    ]
+    # urlpatterns += [
+        # url(f'^{settings.MEDIA_URL.lstrip("/")}(?P<path>.*)$',
+        #     mediaserve, {'document_root': settings.MEDIA_ROOT}),
+        # url(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*$',
+        #     mediaserve, {'document_root': settings.STATIC_ROOT}),
+    # ]
 
 # есть handler500, handler400  и тд
 handler404 = pageNotFound

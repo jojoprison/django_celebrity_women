@@ -4,22 +4,22 @@
 <h1>{{ title }}</h1>
 
 <form method="post">
-  {% csrf_token %}
+    {% csrf_token %}
 
-<!--  общие ошибки при авторизации пользователя-->
-  <div class="form-error">{{ form.non_field_errors }}</div>
+    <!--  общие ошибки при авторизации пользователя-->
+    <div class="form-error">{{ form.non_field_errors }}</div>
 
-  {% for f in form %}
-  <p>
-    <label class="form-input" for="{{ f.id_for_label }}">{{ f.label }}</label>
-    {{ f }}
-  </p>
-<!--  отобажаем ошибки связанные с полями-->
-  <div class="form-error">{{ f.errors }}</div>
+    {% for f in form %}
+    <p>
+        <label class="form-input" for="{{ f.id_for_label }}">{{ f.label }}</label>
+        {{ f }}
+    </p>
+    <!--  отобажаем ошибки связанные с полями-->
+    <div class="form-error">{{ f.errors }}</div>
 
-  {% endfor %}
+    {% endfor %}
 
-  <button type="submit">Войти</button>
+    <button type="submit">Войти</button>
 </form>
 
 {% endblock %}

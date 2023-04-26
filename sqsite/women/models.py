@@ -12,7 +12,10 @@ class Women(models.Model):
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
     # суффикс _id джанга добавит автоматически
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
+    cat = models.ForeignKey(
+        'Category',
+        on_delete=models.PROTECT,
+        verbose_name='Категория')
 
     def __str__(self):
         return self.title
